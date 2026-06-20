@@ -1,0 +1,368 @@
+          //   HTML CODE // 
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ScamShield AI</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🛡 ScamShield AI</h1>
+
+<textarea
+id="userInput"
+placeholder="Paste suspicious message, UPI ID, link etc..."
+></textarea>
+
+<button onclick="scanNow()">
+Scan Now
+</button>
+
+<button onclick="downloadReport()">
+📄 Download Report
+</button>
+
+<div class="result">
+
+<h2 id="riskScore">
+Risk Score: 0%
+</h2>
+
+<p id="message">
+Waiting for scan...
+</p>
+
+</div>
+
+<div class="history">
+
+<h2>Recent Scans</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Type</th>
+<th>Input</th>
+<th>Risk</th>
+</tr>
+</thead>
+
+<tbody id="historyTable">
+</tbody>
+
+</table>
+
+</div>
+
+<div class="tips">
+
+<h2>Cyber Safety Tips</h2>
+
+<p id="tip"></p>
+
+</div>
+
+<div class="assistant">
+
+<h2>AI Security Assistant</h2>
+
+<input
+id="question"
+placeholder="Ask something..."
+>
+
+<button onclick="askAI()">
+Ask AI
+</button>
+
+<p id="answer"></p>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>  
+                       // CSS CODE // 
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#081421;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#00e5ff;
+}
+
+textarea{
+width:100%;
+height:150px;
+padding:15px;
+border:none;
+border-radius:12px;
+margin-bottom:15px;
+}
+
+input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+margin:5px;
+font-size:16px;
+}
+
+.result{
+margin-top:20px;
+background:#0d1b2a;
+padding:20px;
+border-radius:15px;
+}
+
+.history{
+margin-top:25px;
+background:#0d1b2a;
+padding:25px;
+border-radius:15px;
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+th,
+td{
+padding:12px;
+text-align:left;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+th{
+color:#00e5ff;
+}
+
+.tips{
+margin-top:25px;
+background:#0d1b2a;
+padding:20px;
+border-radius:15px;
+}
+
+.assistant{
+margin-top:25px;
+background:#0d1b2a;
+padding:20px;
+border-radius:15px;
+}    
+      // JAVASCRIPT CODE // 
+
+function scanNow(){
+
+const input =
+document
+.getElementById("userInput")
+.value
+.toLowerCase();
+
+let risk = 10;
+let msg = "Looks Safe";
+
+if(
+input.includes("otp") ||
+input.includes("password")
+){
+risk = 85;
+msg = "High Risk Scam Detected";
+}
+
+document.getElementById(
+"riskScore"
+).innerText =
+"Risk Score: " + risk + "%";
+
+document.getElementById(
+"message"
+).innerText =
+msg;
+
+addHistory(
+"Scan",
+input,
+risk + "%"
+);
+
+}
+
+function addHistory(
+type,
+input,
+risk
+){
+
+const row = `
+<tr>
+<td>${type}</td>
+<td>${input.substring(0,30)}</td>
+<td>${risk}</td>
+</tr>
+`;
+
+document
+.getElementById("historyTable")
+.innerHTML += row;
+
+}
+
+function downloadReport(){
+
+const score =
+document
+.getElementById(
+"riskScore"
+)
+.innerText;
+
+const message =
+document
+.getElementById(
+"message"
+)
+.innerText;
+
+const content = `
+SCAMSHIELD AI REPORT
+
+${score}
+
+${message}
+
+Generated:
+${new Date()}
+`;
+
+const blob =
+new Blob(
+[content],
+{
+type:"text/plain"
+}
+);
+
+const a =
+document.createElement("a");
+
+a.href =
+URL.createObjectURL(blob);
+
+a.download =
+"ScamShieldReport.txt";
+
+a.click();
+
+}
+
+const tips = [
+
+"Never share OTP with anyone",
+
+"Verify UPI ID before payment",
+
+"Do not click unknown links",
+
+"Bank never asks for password",
+
+"Enable two-factor authentication"
+
+];
+
+let index = 0;
+
+setInterval(()=>{
+
+document
+.getElementById("tip")
+.innerText =
+tips[index];
+
+index++;
+
+if(index >= tips.length){
+index = 0;
+}
+
+},3000);
+
+function askAI(){
+
+const q =
+document
+.getElementById(
+"question"
+)
+.value
+.toLowerCase();
+
+let answer =
+"Please be cautious online.";
+
+if(q.includes("otp")){
+answer =
+"Never share OTP with anyone.";
+}
+
+if(q.includes("upi")){
+answer =
+"Verify receiver details before payment.";
+}
+
+if(q.includes("link")){
+answer =
+"Avoid clicking unknown links.";
+}
+
+document
+.getElementById(
+"answer"
+)
+.innerText =
+answer;
+
+}
